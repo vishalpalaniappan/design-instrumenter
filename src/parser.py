@@ -72,7 +72,7 @@ def parse_source_file(source_path):
 
     for node in iterate_statements(tree):
 
-        if hasattr(node, "lineno") and isinstance(node, ast.stmt) and not type(node).__name__ in NO_MAP:
+        if hasattr(node, "lineno") and type(node).__name__ not in NO_MAP:
 
             if "body" in node._fields and isinstance(node.body, list) and len(node.body) > 0:
                 endLine = node.body[0].lineno - 1
