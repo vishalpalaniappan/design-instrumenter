@@ -7,7 +7,7 @@ def verify_python_compatibility():
 def parse_source_file(source_path):
     '''
         Parses the source file and generates a mapping of all statements to their line numbers.
-        This is used for visual mapping of the original source code to the translated code.
+        This is used for visual mapping of the design onto the implementation.
 
         Each statement is represented as a dictionary with the following keys:
         - type: The type of the AST node (e.g., If, For, FunctionDef, etc.)
