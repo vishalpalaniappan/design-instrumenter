@@ -1,6 +1,13 @@
 import os, ast, uuid, json
 from pathlib import Path
 
+
+NO_MAP = (
+    "FunctionDef",
+    "AsyncFunctionDef",
+    "ClassDef"
+)
+
 def parse_source_file(source_path):
     '''
         Parses the source file and generates a mapping of all statements to their line numbers.
@@ -45,7 +52,9 @@ def parse_source_file(source_path):
     mapping = []
 
     for node in ast.walk(ast.parse(source_code)):
-        if hasattr(node, "lineno") and isinstance(node, ast.stmt):
+
+        if hasattr(node, "lineno") and isinstance(node, ast.stmt) and not type(node).__name__ in NO_MAP:
+
             if "body" in node._fields and isinstance(node.body, list) and len(node.body) > 0:
                 endLine = node.body[0].lineno - 1
                 for count in range(endLine, node.lineno, -1):
@@ -55,6 +64,7 @@ def parse_source_file(source_path):
                         endLine -= 1
                 source = lines[node.lineno - 1: endLine]
                 endLineNo = endLine
+
             elif isinstance(node, ast.stmt):
                 source = ast.get_source_segment(source_code, node)
                 endLineNo = node.end_lineno 
