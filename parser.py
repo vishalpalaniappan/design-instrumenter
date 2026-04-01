@@ -1,4 +1,5 @@
-import ast, sys, argparse, json, uuid
+import ast, sys, argparse, json, uuid, os
+from pathlib import Path
 
 def verify_python_compatibility():
     if not hasattr(ast, 'unparse'):
@@ -48,11 +49,8 @@ def parse_source_file(source_path):
     mapping = []
 
     for node in ast.walk(ast.parse(source_code)):
-        source = ""
         if hasattr(node, "lineno") and isinstance(node, ast.stmt):
             if "body" in node._fields and isinstance(node.body, list) and len(node.body) > 0:
-                # Start at line of first node in body and work backwards to remove new lines
-                # until first non-empty line is reached.
                 endLine = node.body[0].lineno - 1
                 for count in range(endLine, node.lineno, -1):
                     if lines[count - 1].strip() != "":
@@ -73,7 +71,9 @@ def parse_source_file(source_path):
                 "source": source,
             })
                 
-    with open("mapping.json", "w") as mapping_file:
+    nameWExtenstion = Path(source_path).name
+    name = os.path.splitext(nameWExtenstion)[0] 
+    with open(f"{name}_mapping.json", "w") as mapping_file:
         json.dump(mapping, mapping_file, indent=4)
     
 
