@@ -14,12 +14,12 @@ This process will be repeated for multiple languages and it will also be extende
 ## Usage
 
 To produce mapping from a python program:
-```
+```bash
 python3 instrumenter.py --mode parser <source_path>
 ```
 
 An example for one of the sample files:
-```
+```bash
 python3 instrumenter.py --mode parser sample/FrenchTranslator.py 
 ```
 
