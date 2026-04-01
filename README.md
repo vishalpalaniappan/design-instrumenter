@@ -10,3 +10,15 @@ In my previous version of instrumenting programs, I built tools that can automat
 So my plan is to first implement the necessary code to enable the visual tool to do the mapping in the design workbench, then I will use the result of the mapping to instrument and execute. Then I will take the result and bring it back into design workbench where the execution will be transformed in the behavior of the design and then rest of the design feedback loop will take over.
 
 This will be written in python and the server will invoke this program as needed. Eventually this will be extended for other languages and the same process will repeat.
+
+## Usage
+
+```
+python3 parser.py <source>
+```
+
+```
+python3 parser.py FrenchTranslator.py
+```
+
+Output will be saved in mapping.json.
