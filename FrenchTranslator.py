@@ -2,9 +2,7 @@ import threading
 import queue
 from deep_translator import GoogleTranslator # type: ignore
 
-class FrenchTranslator(    
-    threading.Thread
-    ):
+class FrenchTranslator(threading.Thread):
     def __init__(self, id, queue, packerQueue):
         super().__init__(daemon=True)
         self.queue = queue
@@ -12,10 +10,7 @@ class FrenchTranslator(
         self.packerQueue = packerQueue
         self.start()
 
-    def run(
-            self
-        ):
-
+    def run(self):
         while True:
             try:
                 job = self.queue.get(timeout=10)
