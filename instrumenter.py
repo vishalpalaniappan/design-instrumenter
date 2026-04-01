@@ -19,7 +19,7 @@ def main(argv):
     args_parser.add_argument(
         "--mode",
         type=str,
-        help="Mode of operation"
+        help="Mode of operation (currently only parser, instrumenter in future)"
     )
 
     args_parser.add_argument(
