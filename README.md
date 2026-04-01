@@ -9,7 +9,7 @@ This tool plays multiple roles in the design feedback loop.
 
 This program will be called from the node server and it will provide the necessary metadata to the UI to enable the mapping. It will then be called by the server again when it instruments and executes the code. The resulting execution trace will be automatically debugged by the engine. 
 
-This process will be repeated for multiple languages and it will also be extended to instrument systems. The instrumenter will use CLP logging libraries and the mapping will be extended to include domain specific knowledge about the data to apply domain specific compression.
+This process will be repeated for multiple languages and it will also be extended to instrument systems. The instrumenter will use CLP logging libraries and the mapping will be extended to include domain-specific knowledge about the data to apply domain-specific compression.
 
 ## Usage
 
