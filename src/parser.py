@@ -2,12 +2,22 @@
 import sys, os, ast, uuid, json
 from pathlib import Path
 
-
 NO_MAP = (
     "FunctionDef",
     "AsyncFunctionDef",
     "ClassDef"
 )
+
+def iterate_statements(node):
+    '''
+        Structured traversal of AST nodes to yield statements in the
+        order they appear in the source code. This is used to
+        generate a mapping of statements for visual representation.
+    '''
+    for child in ast.iter_child_nodes(node):
+        if isinstance(child, ast.stmt):
+            yield child
+        yield from iterate_statements(child)
 
 def parse_source_file(source_path):
     '''
@@ -56,11 +66,11 @@ def parse_source_file(source_path):
         print(f"Error reading source file: {e}", file=sys.stderr)
         return
 
-    lines = source_code.splitlines()
-    
     mapping = []
+    lines = source_code.splitlines()
+    tree = ast.parse(source_code)
 
-    for node in ast.walk(ast.parse(source_code)):
+    for node in iterate_statements(tree):
 
         if hasattr(node, "lineno") and isinstance(node, ast.stmt) and not type(node).__name__ in NO_MAP:
 
