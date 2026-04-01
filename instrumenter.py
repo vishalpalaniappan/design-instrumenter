@@ -34,6 +34,11 @@ def main(argv):
     if (mode == "parser"):
         source_path = args.source
         parse_source_file(source_path)
+    else:
+        print(f"Unknown or missing mode: {mode}. Supported modes: parser", file=sys.stderr)
+        return 1
+        
+    return 0
 
 
 if "__main__" == __name__:
