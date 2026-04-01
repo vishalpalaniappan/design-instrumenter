@@ -1,12 +1,14 @@
 # design-instrumenter
-A tool to instrument a python program using the mapping contained in the DAL engine as specific in the design workbench.
+This tool instruments Python programs using the implementation mapping stored in the DAL engine, as defined by the Design Workbench.
 
-This tool performs two operations:
-- It parses the AST of a python program and identifies sections that can be used to map the design onto the implementation. This will be running on the server and in mapping mode, it will generate the relevant metadata needed to do the mapping visually in the front end. This mapped information will be saved in the engine.
-- It accepts the mapping contained in the engine and instruments the program, producing an execution that can be transformed into the behavior of the design.
+This tool performs two primary operations:
+- The tool parses the AST of a Python program and identifies implementation sections that can be mapped onto the design. This operation runs on the server and supports the visual mapping workflow in the front end.
+- The tool also accepts the implementation mapping stored in the engine and uses it to instrument the Python program.
 
-In my previous version of instrumenting programs, I built tools that can automatically instrument the dynamic trace. However, all data collection in this framework is motivated by semantic necessity. So there is no need fancy instrumentation, instead, it will work with the design workbench to identify the semantically relevant information that must be instrumented. Eventually, this will be extended to include the domain specific data specification so that CLP can apply domain specific compression to the data.
+In my previous instrumentation programs (see [adli][adli]), I built tools that can automatically instrument the complete dynamic trace. However, all data collection in the design feedback loop is motivated by semantic necessity. So it is a much simpler process, it will work with the design workbench to identify the semantically relevant information that must be instrumented. Eventually, this will be extended to include the domain specification of the data so that CLP can apply domain specific compression and fully optimize the platform.
 
-So my plan is to first implement the necessary code to enable the visual tool to do the mapping in the design workbench, then I will use the result of the mapping to instrument and execute. Then I will take the result and bring it back into design workbench where the execution will be transformed in the behavior of the design and then rest of the design feedback loop will take over.
+My plan is to first implement a solution that will enable the visual tool to do the mapping in the design workbench and save that in the engine. Then I will bring the engine into the instrumenter and use the mapping to instrument the program so it produces a trace that can be transforme into the behavior of the design. Then the rest of the design feedback loop will take over.
 
-This will be written in python and the server will invoke this program as needed. Eventually this will be extended for other languages and the same process will repeat.
+This will be written in python so that I can leverage its AST library and the server will invoke this program as needed. Eventually this will be extended for other languages and the same process will repeat.
+
+[adli]: https://github.com/vishalpalaniappan/asp-adli-python
