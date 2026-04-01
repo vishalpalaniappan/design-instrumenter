@@ -90,6 +90,7 @@ def parse_source_file(source_path):
 
             mapping.append({
                 "type": type(node).__name__,
+                "source_path": source_path,
                 "uid": str(uuid.uuid4()),
                 "start_line": node.lineno,
                 "end_line": endLineNo,
