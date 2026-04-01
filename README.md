@@ -1,14 +1,26 @@
-# design-instrumenter
-This tool instruments Python programs using the implementation mapping stored in the DAL engine, as defined by the Design Workbench.
+# Design Instrumentor
 
-This tool performs two primary operations:
-- The tool parses the AST of a Python program and identifies implementation sections that can be mapped onto the design. This operation runs on the server and supports the visual mapping workflow in the front end.
-- The tool also accepts the implementation mapping stored in the engine and uses it to instrument the Python program.
+> [!NOTE]  
+> This repo is in development and currently a simple parser is implemented to enable visual mapping of the design onto the implementation.
 
-In my previous instrumentation programs (see [adli][adli]), I built tools that can automatically instrument the complete dynamic trace. However, all data collection in the design feedback loop is motivated by semantic necessity. So it is a much simpler process, it will work with the design workbench to identify the semantically relevant information that must be instrumented. Eventually, this will be extended to include the domain specification of the data so that CLP can apply domain specific compression and fully optimize the platform.
+This tool plays multiple roles in the design feedback loop. 
+- It parses the source code and generates a mapping file that can be used to visually map the design onto the implementation.
+- It accepts the mapping and instruments the source with the semantic information need to produce traces that can be semantically transformed. 
 
-My plan is to first implement a solution that will enable the visual tool to do the mapping in the design workbench and save that in the engine. Then I will bring the engine into the instrumenter and use the mapping to instrument the program so it produces a trace that can be transforme into the behavior of the design. Then the rest of the design feedback loop will take over.
+This program will be called from the node server and it will provide the necessary metadata to the UI to enable the mapping. It will then be called by the server again when it instruments and executes the code. The resulting execution trace will be automatically debugged by the engine. 
 
-This will be written in python so that I can leverage its AST library and the server will invoke this program as needed. Eventually this will be extended for other languages and the same process will repeat.
+This process will be repeated for multiple languages and it will also be extended to instrument systems. The instrumenter will use CLP logging libraries and the mapping will be extended to include domain-specific knowledge about the data to apply domain-specific compression.
 
-[adli]: https://github.com/vishalpalaniappan/asp-adli-python
+## Usage
+
+To produce mapping from a python program:
+```bash
+python3 instrumenter.py --mode parser <source_path>
+```
+
+An example for one of the sample files:
+```bash
+python3 instrumenter.py --mode parser sample/FrenchTranslator.py 
+```
+
+Output will be saved in the output folder with the name <file_name>_mapping.json.
