@@ -1,9 +1,5 @@
-import ast, sys, argparse, json, uuid, os
+import os, ast, uuid, json
 from pathlib import Path
-
-def verify_python_compatibility():
-    if not hasattr(ast, 'unparse'):
-        raise RuntimeError("This program requires Python 3.9+ (ast.unparse not available)")
 
 def parse_source_file(source_path):
     '''
@@ -73,31 +69,5 @@ def parse_source_file(source_path):
                 
     nameWExtenstion = Path(source_path).name
     name = os.path.splitext(nameWExtenstion)[0] 
-    with open(f"{name}_mapping.json", "w") as mapping_file:
+    with open(f"./output/{name}_mapping.json", "w") as mapping_file:
         json.dump(mapping, mapping_file, indent=4)
-    
-
-def main(argv):
-    '''
-        Main entry point for the program. Parses command line arguments and 
-        initiates the source file parsing.
-    '''
-    verify_python_compatibility()
-
-    args_parser = argparse.ArgumentParser(
-        description="Generates a mapping of all statements to their line numbers in a Python source file for visual mapping."
-    )
-
-    args_parser.add_argument(
-        "source",
-        type=str,
-        help="Path to source file"
-    )
-
-    args = args_parser.parse_args(argv[1:])
-    source_path = args.source
-    parse_source_file(source_path)
-
-
-if "__main__" == __name__:
-    sys.exit(main(sys.argv))

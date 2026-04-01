@@ -14,11 +14,11 @@ This will be written in python and the server will invoke this program as needed
 ## Usage
 
 ```
-python3 parser.py <source>
+python3 instrumenter.py --mode parser <source_path>
 ```
 
 ```
-python3 parser.py FrenchTranslator.py
+python3 instrumenter.py --mode parser sample/FrenchTranslator.py 
 ```
 
 Output will be saved in mapping.json.
