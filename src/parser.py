@@ -1,4 +1,5 @@
-import os, ast, uuid, json
+
+import sys, os, ast, uuid, json
 from pathlib import Path
 
 
@@ -44,8 +45,16 @@ def parse_source_file(source_path):
         mapped onto participants. Then this information is used to instrument the code resulting in a
         execution trace that can be transformed into the behavior of the design.
     '''
-    with open(source_path, "r") as source_file:
-        source_code = source_file.read()
+
+    try:
+        with open(source_path, "r") as source_file:
+            source_code = source_file.read()
+    except FileNotFoundError:
+        print(f"Source file not found: {source_path}", file=sys.stderr)
+        return
+    except Exception as e:
+        print(f"Error reading source file: {e}", file=sys.stderr)
+        return
 
     lines = source_code.splitlines()
     
