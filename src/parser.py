@@ -88,9 +88,9 @@ def parse_source_file(source_path):
                 source = ast.get_source_segment(source_code, node)
                 endLineNo = node.end_lineno 
 
-            if (endLineNo > node.lineno):
+            if (endLineNo < node.lineno):
                 # TODO: This happens when there are single line compound statmenets, raising this error while working on a statergy to deal with this.
-                raise RuntimeError(f"End line number {endLineNo} is greater than start line number {node.lineno} for node type {type(node).__name__}. ")
+                raise RuntimeError(f"End line number {endLineNo} is less than start line number {node.lineno} for node type {type(node).__name__}. ")
 
             mapping.append({
                 "type": type(node).__name__,
