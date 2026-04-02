@@ -19,7 +19,7 @@ def iterate_statements(node):
             yield child
         yield from iterate_statements(child)
 
-def parse_source_file(source_path):
+def parse_source_file(source_path, stream=False):
     '''
         Parses the source file and generates a mapping of all statements to their line numbers.
         This is used for visual mapping of the design onto the implementation.
@@ -100,17 +100,21 @@ def parse_source_file(source_path):
                 "end_line": endLineNo,
                 "source": source,
             })
-                
-    # File Name
-    nameWExtenstion = Path(source_path).name
-    name = os.path.splitext(nameWExtenstion)[0] 
 
-    # Output path (create folder if it doesn't exist)
-    path = Path("./output")
-    path.mkdir(parents=True, exist_ok=True)
-    output_path = path / f"{name}_mapping.json"
 
-    with open(output_path, "w") as mapping_file:
-        json.dump(mapping, mapping_file, indent=4)
+    if (stream):
+        print(json.dumps(mapping, indent=4))
+    else:
+        # File Name
+        nameWExtenstion = Path(source_path).name
+        name = os.path.splitext(nameWExtenstion)[0] 
 
-    print(f"Mapping generated for {source_path} and saved to {output_path}")
+        # Output path (create folder if it doesn't exist)
+        path = Path("./output")
+        path.mkdir(parents=True, exist_ok=True)
+        output_path = path / f"{name}_mapping.json"
+
+        with open(output_path, "w") as mapping_file:
+            json.dump(mapping, mapping_file, indent=4)
+
+        print(f"Mapping generated for {source_path} and saved to {output_path}")
