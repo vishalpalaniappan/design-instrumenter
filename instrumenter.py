@@ -36,7 +36,7 @@ def main(argv):
     elif (mode == "parser_stream"):
         parse_source_file(args.source, stream=True)
     else:
-        print(f"Unknown or missing mode: {mode}. Supported modes: parser", file=sys.stderr)
+        print(f"Unknown or missing mode: {mode}. Supported modes: parser and parser_stream", file=sys.stderr)
         return 1
         
     return 0
