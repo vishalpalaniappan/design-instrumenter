@@ -9,6 +9,7 @@ import { spawn } from "node:child_process";
 function getMapping(source, args = []) {
     return new Promise((resolve, reject) => {
         const process = spawn("python3", ["instrumenter.py", "parser_stream", ...args]);
+        let settled = false;
 
         let stdout = "";
         let stderr = "";
@@ -21,7 +22,15 @@ function getMapping(source, args = []) {
             stderr += data.toString();
         });
 
+        process.on("error", (err) => {
+            if (settled) return;
+            settled = true;
+            reject(err);
+        });
+
         process.on("close", async (code) => {
+            if (settled) return;
+            settled = true;
             if (code !== 0) {
                 reject(new Error(stderr || `Process exited with code ${code}`));
             } else {

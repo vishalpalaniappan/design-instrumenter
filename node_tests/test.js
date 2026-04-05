@@ -6,7 +6,8 @@ const testStreamMode = async () => {
     getMapping(file).then((mapping) => {
         console.log("Mapping output:", mapping);
     }).catch((err) => {
-        console.error("Error during getMapping execution:", err);
+        console.error("Error during getMapping execution:");
+        console.error(err);
         process.exit(1);
     });
 }
