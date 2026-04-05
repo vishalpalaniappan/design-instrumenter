@@ -56,15 +56,18 @@ def parse_source_file(source_path, stream=False):
         execution trace that can be transformed into the behavior of the design.
     '''
 
-    try:
-        with open(source_path, "r") as source_file:
-            source_code = source_file.read()
-    except FileNotFoundError:
-        print(f"Source file not found: {source_path}", file=sys.stderr)
-        return
-    except Exception as e:
-        print(f"Error reading source file: {e}", file=sys.stderr)
-        return
+    if stream:
+        source_code = sys.stdin.read()
+    else:
+        try:
+            with open(source_path, "r") as source_file:
+                source_code = source_file.read()
+        except FileNotFoundError:
+            print(f"Source file not found: {source_path}", file=sys.stderr)
+            return
+        except Exception as e:
+            print(f"Error reading source file: {e}", file=sys.stderr)
+            return
 
     mapping = []
     lines = source_code.splitlines()

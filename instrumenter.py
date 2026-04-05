@@ -12,31 +12,29 @@ def main(argv):
     '''
     verify_python_compatibility()
 
-    args_parser = argparse.ArgumentParser(
-        description="Generates a mapping of all statements to their line numbers in a Python source file for visual mapping."
+    args_parser = argparse.ArgumentParser(description="Generates a statement mapping from a python program.")
+    subparsers = args_parser.add_subparsers(
+        dest="mode", 
+        help="Mode of operation (currently only parser and parser_stream)",
+        required=True
     )
 
-    args_parser.add_argument(
-        "--mode",
-        type=str,
-        help="Mode of operation (currently only parser, instrumenter in future)"
+    file_parser = subparsers.add_parser("parser")
+    file_parser.add_argument(
+        "--source", 
+        required=True,
+        help="Path to source file in parser mode."
     )
 
-    args_parser.add_argument(
-        "source",
-        type=str,
-        help="Path to source file"
-    )
+    subparsers.add_parser("parser_stream")
 
     args = args_parser.parse_args(argv[1:])
-    mode = args.mode
-
-    if (mode == "parser"):
+    if (args.mode == "parser"):
         parse_source_file(args.source, stream=False)
-    elif (mode == "parser_stream"):
-        parse_source_file(args.source, stream=True)
+    elif (args.mode == "parser_stream"):
+        parse_source_file(None, stream=True)
     else:
-        print(f"Unknown or missing mode: {mode}. Supported modes: parser and parser_stream", file=sys.stderr)
+        print(f"Unknown or missing mode: {args.mode}. Supported modes: parser and parser_stream", file=sys.stderr)
         return 1
         
     return 0
