@@ -1,12 +1,12 @@
 import { spawn } from "node:child_process";
 
 /**
- * Gets the mapping for the given file by running instrumenter in stream mode.
- * @param {String} file Path of the python script to map.
+ * Gets the mapping for the given python source by invoking the instrumenter in stream mode.
+ * @param {String} source Python source code to be processed by the instrumenter.
  * @param {Array} args The arguments to pass to the instrumenter.
  * @returns {Promise<String>} A promise that resolves with the output of the instrumenter.
  */
-function getMapping(file, args = []) {
+function getMapping(source, args = []) {
     return new Promise((resolve, reject) => {
         const process = spawn("python3", ["instrumenter.py", "parser_stream", ...args]);
 
@@ -30,7 +30,7 @@ function getMapping(file, args = []) {
             }
         });
 
-        process.stdin.write(file);
+        process.stdin.write(source);
         process.stdin.end();
     });
 }
