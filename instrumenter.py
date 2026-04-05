@@ -23,7 +23,7 @@ def main(argv):
     file_parser.add_argument(
         "--source", 
         required=True,
-        help="Path to source file or - for reading from stdin"
+        help="Path to source file in parser mode."
     )
 
     subparsers.add_parser("parser_stream")
