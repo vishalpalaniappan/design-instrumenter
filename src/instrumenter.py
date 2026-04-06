@@ -8,8 +8,7 @@ class SourceInstrumenter(ast.NodeTransformer):
         for entry in self.mapping_data:
             if (hasattr(node, "lineno") and hasattr(node, "end_lineno") and 
                 node.lineno == entry["start_line"] and node.end_lineno == entry["end_line"]):
-                print_stmt = f'print("Executing statement: {entry["uid"]}")'
-                print(print_stmt)
+                print(entry["uid"])
                 return node
             
         self.generic_visit(node) 
