@@ -1,5 +1,6 @@
-def instrument_semantic_information():
+def instrument_semantic_information(source, mapping):
     '''
         Placeholder for functionality.
     '''
-    pass
+    print("Source:", source)
+    print("Mapping:", mapping)
