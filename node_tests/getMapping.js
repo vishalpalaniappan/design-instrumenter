@@ -9,7 +9,7 @@ import { spawn } from "node:child_process";
 function getMapping(source, args = []) {
     return new Promise((resolve, reject) => {
         const process = spawn("python3", ["instrumenter.py", "parser_stream", ...args]);
-        let settled = false;
+                let settled = false;
 
         let stdout = "";
         let stderr = "";
@@ -35,9 +35,19 @@ function getMapping(source, args = []) {
                 reject(new Error(stderr || `Process exited with code ${code}`));
             } else {
                 const outputData = stdout.trim();
-                resolve(outputData);
+                try {
+                    resolve(JSON.parse(outputData));
+                } catch (err) {
+                    reject(new Error(`Failed to parse JSON output: ${err.message}\nOutput was: ${outputData}`));
+                    return;
+                }
             }
         });
+
+        if (typeof source !== "string") {
+            reject(new Error("source must be a string"));
+            return;
+        }
 
         process.stdin.write(source);
         process.stdin.end();
