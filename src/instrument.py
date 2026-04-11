@@ -25,9 +25,12 @@ def zip_folder_in_memory(folder_path: str):
     buffer.seek(0)
     return buffer
 
-def instrument_semantic_information(source):
-    with open(source, "r") as source_file:
-        source_code = source_file.read()
+def instrument_semantic_information(source, stream = False):
+    if stream:
+        source_code = sys.stdin.read()
+    else:
+        with open(source, "r") as source_file:
+            source_code = source_file.read()
 
     package = json.loads(source_code)
 
@@ -54,13 +57,13 @@ def instrument_semantic_information(source):
     os.makedirs(os.path.dirname(dst), exist_ok=True)
     shutil.copy2(src, dst)
 
+    if (stream):
+        buffer = zip_folder_in_memory(output_folder)
+        while True:
+            chunk = buffer.read(4096)
+            if not chunk:
+                break
+            sys.stdout.buffer.write(chunk)
+            sys.stdout.buffer.flush()
 
-    buffer = zip_folder_in_memory(output_folder)
-    while True:
-        chunk = buffer.read(4096)
-        if not chunk:
-            break
-        sys.stdout.buffer.write(chunk)
-        sys.stdout.buffer.flush()
-        
     # shutil.rmtree(output_folder, ignore_errors=True)
