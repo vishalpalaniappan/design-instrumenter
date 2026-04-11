@@ -1,6 +1,7 @@
 import os
 import json
 import ast
+from src.instrumentation.LogInjector import LogInjector
 
 class SourceInstrumenter(ast.NodeTransformer):
     def __init__(self, mapping_data):
@@ -38,13 +39,10 @@ def instrument_semantic_information(source):
     package = json.loads(source_code)
 
     for file in package:
-        print(package[file]["name"])
+        stmtIndex = package[file]["statementIndex"]
+        source = package[file]["content"]
+        injector = LogInjector(stmtIndex)
+        new_tree = injector.visit(ast.parse(source))
 
-    # tree = ast.parse(source_code)
-    # instrumenter = SourceInstrumenter(mapping_data)
-    # instrumented_tree = instrumenter.visit(tree)
-    # instrumented_code = ast.unparse(instrumented_tree)
-
-    # filename = os.path.basename(source)
-    # with open("./output/instrumented_" + filename, "w") as instrumented_file:
-    #     instrumented_file.write(instrumented_code)
+        with open("./output/instrumented_" + os.path.basename(package[file]["name"]), "w") as instrumented_file:
+            instrumented_file.write(ast.unparse(new_tree))
