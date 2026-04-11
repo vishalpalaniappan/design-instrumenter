@@ -1,6 +1,6 @@
 import ast, sys, argparse
 from src.parser import parse_source_file
-from src.instrumenter import instrument_semantic_information
+from src.instrument import instrument_semantic_information
 
 def verify_python_compatibility():
     if not hasattr(ast, 'unparse'):
@@ -37,15 +37,19 @@ def main(argv):
         help="Path to instrumentation package for instrumenter mode."
     )
 
+    subparsers.add_parser("instrumenter_stream")
+
     args = args_parser.parse_args(argv[1:])
     if (args.mode == "parser"):
         parse_source_file(args.source, stream=False)
     elif (args.mode == "parser_stream"):
         parse_source_file(None, stream=True)
     elif (args.mode == "instrument"):
-        instrument_semantic_information(args.source)
+        instrument_semantic_information(args.source, stream=False)
+    elif (args.mode == "instrumenter_stream"):
+        instrument_semantic_information(None, stream=True)
     else:
-        print(f"Unknown or missing mode: {args.mode}. Supported modes: parser, parser_stream, and instrument", file=sys.stderr)
+        print(f"Unknown or missing mode: {args.mode}. Supported modes: parser, parser_stream, instrumenter_stream, and instrument", file=sys.stderr)
         return 1
         
     return 0
