@@ -21,23 +21,20 @@ class LoggingHelper:
     def __init__(self):
         self.count = 0
 
-    def logVariable(self):
-        pass
+    def logVariable(self, stmtId, name, value):
+        entry = {}
+        entry["stmtId"] = stmtId
+        entry["type"] = "variable"
+        entry["name"] = name
+        entry["value"] = value
+        logger.info(entry)
 
-    def logStmt(self):
-        pass
-
-    def logException(self):
-        pass
-
-    def logHeader(self):
-        pass
-
-    def logOutput(self):
-        pass
-
-    def decodeInput(self):
-        pass
+    def logBehavior(self, stmtId, name):
+        entry = {}
+        entry["stmtId"] = stmtId
+        entry["type"] = "behavior"
+        entry["name"] = name
+        logger.info(entry)
 
 
 adli = LoggingHelper()
