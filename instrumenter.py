@@ -34,12 +34,7 @@ def main(argv):
     file_parser.add_argument(
         "--source",
         required=True,
-        help="Path to source file in instrumenter mode."
-    )
-    file_parser.add_argument(
-        "--mapping",
-        required=True,
-        help="Path to mapping file in instrumenter mode."
+        help="Path to instrumentation package for instrumenter mode."
     )
 
     args = args_parser.parse_args(argv[1:])
@@ -48,7 +43,7 @@ def main(argv):
     elif (args.mode == "parser_stream"):
         parse_source_file(None, stream=True)
     elif (args.mode == "instrument"):
-        instrument_semantic_information(args.source, args.mapping)
+        instrument_semantic_information(args.source)
     else:
         print(f"Unknown or missing mode: {args.mode}. Supported modes: parser, parser_stream, and instrument", file=sys.stderr)
         return 1

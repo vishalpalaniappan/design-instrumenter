@@ -9,7 +9,6 @@ class SourceInstrumenter(ast.NodeTransformer):
         '''
         self.mapping_data = mapping_data
 
-
     def getEntryForNode(self, node):
         '''
             Get the mapping entry for a given AST node.
@@ -28,25 +27,24 @@ class SourceInstrumenter(ast.NodeTransformer):
         entry = self.getEntryForNode(node)
         if entry:
             print(entry["uid"], type(node).__name__, entry["type"])
-            return node
             
         self.generic_visit(node) 
         return node
 
-
-def instrument_semantic_information(source, mapping):
+def instrument_semantic_information(source):
     with open(source, "r") as source_file:
         source_code = source_file.read()
 
-    with open(mapping, "r") as mapping_file:
-        mapping_data = json.load(mapping_file)
+    package = json.loads(source_code)
 
+    for file in package:
+        print(package[file]["name"])
 
-    tree = ast.parse(source_code)
-    instrumenter = SourceInstrumenter(mapping_data)
-    instrumented_tree = instrumenter.visit(tree)
-    instrumented_code = ast.unparse(instrumented_tree)
+    # tree = ast.parse(source_code)
+    # instrumenter = SourceInstrumenter(mapping_data)
+    # instrumented_tree = instrumenter.visit(tree)
+    # instrumented_code = ast.unparse(instrumented_tree)
 
-    filename = os.path.basename(source)
-    with open("./output/instrumented_" + filename, "w") as instrumented_file:
-        instrumented_file.write(instrumented_code)
+    # filename = os.path.basename(source)
+    # with open("./output/instrumented_" + filename, "w") as instrumented_file:
+    #     instrumented_file.write(instrumented_code)
