@@ -6,6 +6,7 @@ import ast
 import shutil
 import zipfile
 from src.instrumentation.LogInjector import LogInjector
+from pathlib import Path
 
 def zip_folder_in_memory(folder_path: str):
     '''
@@ -34,7 +35,8 @@ def instrument_semantic_information(source, stream = False):
 
     package = json.loads(source_code)
 
-    output_folder = "temp"
+    script_dir = Path.cwd()
+    output_folder = os.path.join(script_dir, "temp")
     shutil.rmtree(output_folder, ignore_errors=True)
     os.makedirs(output_folder, exist_ok=True)
 
