@@ -53,8 +53,9 @@ def instrument_semantic_information(source, stream = False):
         with open(instrumented_file_path, "w") as instrumented_file:
             instrumented_file.write(ast.unparse(new_tree))
 
-    src = os.path.join("src", "instrumentation", "LoggingHelper.py")
-    dst = os.path.join(output_folder, "LoggingHelper.py")
+    script_dir = Path.cwd()
+    src = script_dir / "src" / "instrumentation" / "LoggingHelper.py"
+    dst = Path(output_folder) / "LoggingHelper.py"
 
     os.makedirs(os.path.dirname(dst), exist_ok=True)
     shutil.copy2(src, dst)
