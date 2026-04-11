@@ -1,10 +1,10 @@
-import instrument from './instrument_source.js';
+import instrumentingRunner from './instrumentingRunner.js';
 import fs from 'fs/promises';
 import unzipper from "unzipper";
 
 const testStreamMode = async () => {
     const file = await fs.readFile("./sample/library_manager.dal.json", 'utf-8');
-    instrument(file).then(async(zipBuffer) => {
+    instrumentingRunner(file).then(async(zipBuffer) => {
         console.log("Instrumenter output:", zipBuffer);
         const directory = await unzipper.Open.buffer(zipBuffer);
         await directory.extract({ path: "./" });

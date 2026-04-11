@@ -1,12 +1,12 @@
-import getMapping from './getMapping.js';
+import stmtMappingRunner from './stmtMappingRunner.js';
 import fs from 'fs/promises';
 
 const testStreamMode = async () => {
     const file = await fs.readFile("./sample/TransactionDB.py", 'utf-8');
-    getMapping(file).then((mapping) => {
+    stmtMappingRunner(file).then((mapping) => {
         console.log("Mapping output:", mapping);
     }).catch((err) => {
-        console.error("Error during getMapping execution:");
+        console.error("Error during stmtMappingRunner execution:");
         console.error(err);
         process.exit(1);
     });

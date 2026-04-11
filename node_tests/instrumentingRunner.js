@@ -6,7 +6,7 @@ import { spawn } from "node:child_process";
  * @param {Array} args The arguments to pass to the instrumenter.
  * @returns {Promise<String>} A promise that resolves with the output of the instrumenter.
  */
-function instrument(source, args = []) {
+function instrumentingRunner(source, args = []) {
     return new Promise((resolve, reject) => {
         const process = spawn("python3", ["instrumenter.py", "instrumenter_stream", ...args]);
                 let settled = false;
@@ -49,4 +49,4 @@ function instrument(source, args = []) {
     });
 }
 
-export default instrument;
+export default instrumentingRunner;
