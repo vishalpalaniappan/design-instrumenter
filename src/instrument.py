@@ -35,7 +35,7 @@ def instrument_semantic_information(source, stream = False):
 
     package = json.loads(source_code)
 
-    script_dir = Path.cwd()
+    script_dir = Path(__file__).resolve().parent
     output_folder = os.path.join(script_dir, "temp")
     shutil.rmtree(output_folder, ignore_errors=True)
     os.makedirs(output_folder, exist_ok=True)
@@ -53,8 +53,7 @@ def instrument_semantic_information(source, stream = False):
         with open(instrumented_file_path, "w") as instrumented_file:
             instrumented_file.write(ast.unparse(new_tree))
 
-    script_dir = Path.cwd()
-    src = script_dir / "src" / "instrumentation" / "LoggingHelper.py"
+    src = script_dir / "instrumentation" / "LoggingHelper.py"
     dst = Path(output_folder) / "LoggingHelper.py"
 
     os.makedirs(os.path.dirname(dst), exist_ok=True)
