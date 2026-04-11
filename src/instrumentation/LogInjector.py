@@ -21,34 +21,77 @@ class LogInjector(ast.NodeTransformer):
     def __init__(self, mapping):
         self.mapping = mapping
 
-    def visit(self, node):
-        self.entry = is_in_map(node, self.mapping)
-        if isinstance(node, ast.stmt) and self.entry:
-            method = getattr(self, f"visit_{node.__class__.__name__}", None)
-            if method is not None:
-                return method(node)
 
-        return self.generic_visit(node)
-
-    
-    def visit_Expr(self, node):
-        new_node = ast.Expr(
+    def getLogStmts (self):
+        return ast.Expr(
             value=ast.Call(
-                func=ast.Name(id="print", ctx=ast.Load()),
-                args=[ast.Constant(value=self.entry["_behaviorId"])],
+                func=ast.Attribute(
+                    value=ast.Name(id="adli", ctx=ast.Load()),
+                    attr="logBehavior",
+                    ctx=ast.Load()
+                ),
+                args=[
+                    ast.Constant(value=self.entry["_uid"]),
+                    ast.Constant(value=self.entry["_behaviorId"])
+                ],
                 keywords=[]
             )
         )
-        return [new_node, self.generic_visit(node)]
+
+    def visit(self, node):
+        self.entry = is_in_map(node, self.mapping)
+
+
+        '''
+            If a node is a stmt and doesn't have a body, simply
+            log the behavior before the statement.
+
+            If it has a body, then depending on the type of statement,
+            we have to log the behavior at the right place. For example,
+            with while loops, you want to log the behavior.
+
+            I am using my tried and tested approach for now but I think
+            if I think some more I will find a simpler way. Anyway, in the
+            next stage, I will log the variables and I will log them before
+            the statement is executed because it shows the participant value
+            that the behavior used.
+
+            This is different than my dynamic trace logger where I log the
+            variables after the statement.
+        '''
+        if isinstance(node, ast.stmt) and self.entry:
+
+            if "body" not in node._fields:
+                new_node = self.getLogStmts()
+                return [new_node, self.generic_visit(node)]
+            else:
+                method = getattr(self, f"visit_{node.__class__.__name__}", None)
+                if method is not None:
+                    return method(node)
+
+        return self.generic_visit(node)
 
     def visit_If(self, node):
-        return node
+        if not self.entry:
+            return self.generic_visit(node)
+        
+        new_node = self.getLogStmts()
+        return [new_node, self.generic_visit(node)]
 
     def visit_For(self, node):
-        return node
+        if not self.entry:
+            return self.generic_visit(node)
+        
+        new_node = self.getLogStmts()
+        node.body.append(new_node)
+        
+        return [new_node, self.generic_visit(node)]
 
     def visit_While(self, node):
-        return node
-
-    def visit_FunctionDef(self, node):
-        return node
+        if not self.entry:
+            return self.generic_visit(node)
+        
+        new_node = self.getLogStmts()
+        node.body.append(new_node)
+        
+        return [new_node, self.generic_visit(node)]
