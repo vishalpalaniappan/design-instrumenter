@@ -57,7 +57,7 @@ class LogInjector(ast.NodeTransformer):
                 )
             ))
 
-        return [variableLogs, behaviorLog]
+        return [behaviorLog, variableLogs]
 
     def visit(self, node):
         self.entry = is_in_map(node, self.mapping)
