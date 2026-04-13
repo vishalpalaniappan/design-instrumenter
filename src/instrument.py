@@ -50,8 +50,6 @@ def instrument_semantic_information(source, stream = False):
         importNode = ast.parse("from LoggingHelper import adli").body[0]
         new_tree.body.insert(0, importNode)
 
-        new_tree = injectTryExcept(new_tree)
-
         instrumented_file_path = os.path.join(output_folder, os.path.basename(package[file]["name"]))
         with open(instrumented_file_path, "w") as instrumented_file:
             instrumented_file.write(ast.unparse(new_tree))
