@@ -21,9 +21,10 @@ class LoggingHelper:
     def __init__(self):
         self.count = 0
 
-    def logVariable(self, stmtId, name, value):
+    def logVariable(self, stmtId, behaviorId, name, value):
         entry = {}
         entry["stmtId"] = stmtId
+        entry["behaviorId"] = behaviorId
         entry["type"] = "variable"
         entry["name"] = name
         entry["value"] = value

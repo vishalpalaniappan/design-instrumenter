@@ -49,6 +49,7 @@ class LogInjector(ast.NodeTransformer):
                     ),
                     args=[
                         ast.Constant(value=self.entry["_uid"]),
+                        ast.Constant(value=self.entry["_behaviorId"]),
                         ast.Constant(value=participant["participantName"]),
                         ast.Name(id=participant["variableName"], ctx=ast.Load())
                     ],
