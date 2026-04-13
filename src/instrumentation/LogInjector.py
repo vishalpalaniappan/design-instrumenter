@@ -72,10 +72,10 @@ class LogInjector(ast.NodeTransformer):
         if isinstance(node, ast.stmt) and self.entry:
 
             if "body" not in node._fields:
-                new_node = self.getLogStmts()
+                injected_node = self.getLogStmts()
                 
                 entry = self.entry
-                return injectTryExcept([new_node, self.generic_visit(node)], entry)
+                return injectTryExcept([*injected_node, self.generic_visit(node)], entry)
             else:
                 method = getattr(self, f"visit_{node.__class__.__name__}", None)
                 if method is not None:
@@ -87,27 +87,24 @@ class LogInjector(ast.NodeTransformer):
         if not self.entry:
             return self.generic_visit(node)
         
-        new_node = self.getLogStmts()
-
+        injected_node = self.getLogStmts()
         entry = self.entry
-        return injectTryExcept([new_node, self.generic_visit(node)], entry)
+        return injectTryExcept([*injected_node, self.generic_visit(node)], entry)
 
     def visit_For(self, node):
         if not self.entry:
             return self.generic_visit(node)
         
-        new_node = self.getLogStmts()
-        node.body.append(new_node)
-
+        injected_node = self.getLogStmts()
+        node.body.append(injected_node)
         entry = self.entry
-        return injectTryExcept([new_node, self.generic_visit(node)], entry)
+        return injectTryExcept([*injected_node, self.generic_visit(node)], entry)
 
     def visit_While(self, node):
         if not self.entry:
             return self.generic_visit(node)
         
-        new_node = self.getLogStmts()
-        node.body.append(new_node)
-        
+        injected_node = self.getLogStmts()
+        node.body.append(injected_node)        
         entry = self.entry
-        return injectTryExcept([new_node, self.generic_visit(node)], entry)
+        return injectTryExcept([*injected_node, self.generic_visit(node)], entry)
