@@ -1,4 +1,5 @@
 import logging
+import traceback
 from pathlib import Path
 from clp_logging.handlers import ClpKeyValuePairStreamHandler
 
@@ -35,6 +36,15 @@ class LoggingHelper:
         entry["type"] = "behavior"
         entry["stmtId"] = stmtId
         entry["behaviorName"] = behaviorId
+        logger.info(entry)
+
+
+    def logException(self, e):
+        entry = {}
+        entry["type"] = "exception"
+        entry["exceptionType"] = type(e).__name__
+        entry["message"] = str(e)
+        entry["traceback"] = traceback.format_exception(type(e), e, e.__traceback__)
         logger.info(entry)
 
 
