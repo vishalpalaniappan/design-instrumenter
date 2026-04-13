@@ -1,4 +1,5 @@
 import ast
+from src.instrumentation.helper import injectTryExcept
 
 def is_in_map(node, mapping_data):
     '''
@@ -84,7 +85,9 @@ class LogInjector(ast.NodeTransformer):
 
             if "body" not in node._fields:
                 new_node = self.getLogStmts()
-                return [new_node, self.generic_visit(node)]
+                
+                entry = self.entry
+                return injectTryExcept([new_node, self.generic_visit(node)], entry)
             else:
                 method = getattr(self, f"visit_{node.__class__.__name__}", None)
                 if method is not None:
@@ -97,7 +100,9 @@ class LogInjector(ast.NodeTransformer):
             return self.generic_visit(node)
         
         new_node = self.getLogStmts()
-        return [new_node, self.generic_visit(node)]
+
+        entry = self.entry
+        return injectTryExcept([new_node, self.generic_visit(node)], entry)
 
     def visit_For(self, node):
         if not self.entry:
@@ -105,8 +110,9 @@ class LogInjector(ast.NodeTransformer):
         
         new_node = self.getLogStmts()
         node.body.append(new_node)
-        
-        return [new_node, self.generic_visit(node)]
+
+        entry = self.entry
+        return injectTryExcept([new_node, self.generic_visit(node)], entry)
 
     def visit_While(self, node):
         if not self.entry:
@@ -115,4 +121,5 @@ class LogInjector(ast.NodeTransformer):
         new_node = self.getLogStmts()
         node.body.append(new_node)
         
-        return [new_node, self.generic_visit(node)]
+        entry = self.entry
+        return injectTryExcept([new_node, self.generic_visit(node)], entry)

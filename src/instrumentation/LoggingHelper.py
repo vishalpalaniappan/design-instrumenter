@@ -38,14 +38,17 @@ class LoggingHelper:
         entry["behaviorName"] = behaviorId
         logger.info(entry)
 
-
-    def logException(self, e):
+    def logException(self, e, stmtId, behaviorId):
         entry = {}
         entry["type"] = "exception"
-        entry["exceptionType"] = type(e).__name__
+        entry["stmtId"] = stmtId
         entry["message"] = str(e)
         entry["traceback"] = traceback.format_exception(type(e), e, e.__traceback__)
+        entry["behaviorName"] = behaviorId
+        entry["exceptionType"] = type(e).__name__
         logger.info(entry)
 
 
 adli = LoggingHelper()
+
+adli.logException(Exception("Test Exception"), "test_stmt_id", "test_behavior_id")

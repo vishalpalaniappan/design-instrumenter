@@ -1,25 +1,39 @@
 import ast
 
-def injectTryExcept(tree):
+def injectTryExcept(node, entry):
     '''
         Injects try except structure around the given tree.
         Injects header into file and imports adli logger instance.
     '''
+    logExceptionCall=ast.Call(
+        func=ast.Attribute(
+            value=ast.Name(id="adli", ctx=ast.Load()),
+            attr="logException",
+            ctx=ast.Load()
+        ),
+        args=[
+            ast.Name(id="e", ctx=ast.Load()),
+            ast.Constant(value=entry["_uid"]),
+            ast.Constant(value=entry["_behaviorId"])
+        ],
+        keywords=[]
+    )
+    
+
     handler = ast.ExceptHandler(
         type=ast.Name(id='Exception', ctx=ast.Load()),
         name='e',
         body=[
-            ast.parse("adli.logException(e)"),
+            ast.Expr(value=logExceptionCall),
             ast.parse("raise"),
         ]
     )
 
     mainTry = ast.Try(
-        body=tree.body,
+        body=node,
         handlers=[handler],
         orelse=[],
         finalbody=[]
     )
-
-    mod = ast.Module(body=[mainTry], type_ignores=[])
-    return mod
+    
+    return mainTry
