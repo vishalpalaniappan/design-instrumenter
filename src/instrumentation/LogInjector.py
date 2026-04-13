@@ -22,7 +22,6 @@ class LogInjector(ast.NodeTransformer):
     def __init__(self, mapping):
         self.mapping = mapping
 
-
     def getLogStmts (self):
         behaviorLog =ast.Expr(
             value=ast.Call(
@@ -63,23 +62,12 @@ class LogInjector(ast.NodeTransformer):
     def visit(self, node):
         self.entry = is_in_map(node, self.mapping)
 
-
         '''
             If a node is a stmt and doesn't have a body, simply
             log the behavior before the statement.
 
             If it has a body, then depending on the type of statement,
-            we have to log the behavior at the right place. For example,
-            with while loops, you want to log the behavior.
-
-            I am using my tried and tested approach for now but I think
-            if I think some more I will find a simpler way. Anyway, in the
-            next stage, I will log the variables and I will log them before
-            the statement is executed because it shows the participant value
-            that the behavior used.
-
-            This is different than my dynamic trace logger where I log the
-            variables after the statement.
+            we have to log the behavior at the right place. 
         '''
         if isinstance(node, ast.stmt) and self.entry:
 

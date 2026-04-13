@@ -29,7 +29,6 @@ def main(argv):
 
     subparsers.add_parser("parser_stream")
 
-
     file_parser = subparsers.add_parser("instrument")
     file_parser.add_argument(
         "--source",
