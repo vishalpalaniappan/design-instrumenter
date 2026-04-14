@@ -47,5 +47,3 @@ class LoggingHelper:
 
 
 adli = LoggingHelper()
-
-adli.logBehaviorFailure("test_stmt_id", "test_behavior_id")
