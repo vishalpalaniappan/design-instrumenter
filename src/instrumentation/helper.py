@@ -8,11 +8,10 @@ def injectTryExcept(node, entry):
     logExceptionCall=ast.Call(
         func=ast.Attribute(
             value=ast.Name(id="adli", ctx=ast.Load()),
-            attr="logException",
+            attr="logFailure",
             ctx=ast.Load()
         ),
         args=[
-            ast.Name(id="e", ctx=ast.Load()),
             ast.Constant(value=entry["_uid"]),
             ast.Constant(value=entry["_behaviorId"])
         ],
