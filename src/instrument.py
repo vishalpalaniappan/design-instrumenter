@@ -48,7 +48,9 @@ def instrument_semantic_information(source, stream = False):
         new_tree = injector.visit(ast.parse(source))
 
         importNode = ast.parse("from LoggingHelper import adli").body[0]
-        new_tree.body.insert(0, importNode)
+
+        if package[file]["name"].endswith(".py"):
+            new_tree.body.insert(0, importNode)
 
         instrumented_file_path = os.path.join(output_folder, os.path.basename(package[file]["name"]))
         with open(instrumented_file_path, "w") as instrumented_file:
