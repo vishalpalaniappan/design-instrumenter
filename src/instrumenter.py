@@ -1,5 +1,8 @@
+import os
 import ast
-from src.helper import getBehaviorLogStmt, getParticipantLogStmt
+import shutil
+from pathlib import Path
+from src.helper import getBehaviorLogStmt, getParticipantLogStmt, injectTryExcept
 
 class LogInjector(ast.NodeTransformer):
 
@@ -18,7 +21,8 @@ class LogInjector(ast.NodeTransformer):
                 continue
             node.body.insert(0,getParticipantLogStmt(behaviorName, participantName))
             
-        node.body.insert(0,getBehaviorLogStmt(behaviorName))
+        node.body.insert(0,getBehaviorLogStmt(behaviorName))        
+        node.body = [injectTryExcept(node.body, behaviorName)]
 
         return self.generic_visit(node)
 
@@ -30,7 +34,16 @@ def instrument_semantic_information(source, stream = False):
     injector = LogInjector()
     instrumentedCode = injector.visit(ast.parse(source_code))
 
-    # ast.fix_missing_locations(instrumentedCode)
+    importNode = ast.parse("from LoggingHelper import adli").body[0]
+    instrumentedCode.body.insert(0, importNode)
 
-    with open("output/instrumented_output.py", "w") as f:
+    script_dir = Path(__file__).resolve().parent
+    output_folder = Path(os.path.join(script_dir.parent, "output"))
+    src = script_dir / "LoggingHelper.py"
+    dst = output_folder / "LoggingHelper.py"
+
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    shutil.copy2(src, dst)
+
+    with open(output_folder / "instrumented_output.py", "w") as f:
         f.write(ast.unparse(instrumentedCode))
