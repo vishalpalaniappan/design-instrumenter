@@ -1,0 +1,7 @@
+This folder contains the instrumentation implementation that leverages the structure of the code to instrument the semantic information.
+
+In previous attemps, I was manually mapping behaviors to statements and then using that mapping to instrument the program. However, while I was working on a design and its implementation, it became clear to me that I don't need to do it in such a convulted way. Instead, I can simply implement each behavior its own function and use the function argumnets to pass in the participant values. 
+
+This means that within each function def, if the function name starts with a behavior_ prefix, I simply log the behavior name and then the participant name/values. The way the code is written describes the design and identifies the semantically relevant information. 
+
+In some ways, you can look at the existing debugging process and it becomes clear that what the developer was doing is looking at the execution to identify the semantically relevant information. All of that work has essentially been automated by making the design the highest authority and driving all aspects of software development from its structure.
