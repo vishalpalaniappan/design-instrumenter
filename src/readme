@@ -5,3 +5,7 @@ In previous attempts, I was manually mapping behaviors to statements and then us
 This means that within each function def, if the function name starts with a b_<behavior_name> prefix, I simply log the behavior name and then the participant name/values. The way the code is written describes the design and identifies the semantically relevant information. 
 
 In some ways, you can look at the existing debugging process and it becomes clear that what the developer was doing is looking at the execution to identify the semantically relevant information. All of that work has essentially been automated by making the design the highest authority and driving all aspects of software development from its structure.
+
+
+Command:
+python3 design-instrumenter.py instrument --source sample/sample.py
