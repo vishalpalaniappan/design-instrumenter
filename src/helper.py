@@ -1,6 +1,6 @@
 import ast
 
-def getBehaviorLogStmt(uid, behaviorName):
+def getBehaviorLogStmt(behaviorName):
     return ast.Expr(
         value=ast.Call(
             func=ast.Attribute(
@@ -9,7 +9,6 @@ def getBehaviorLogStmt(uid, behaviorName):
                 ctx=ast.Load()
             ),
             args=[
-                ast.Constant(value=uid),
                 ast.Constant(value=behaviorName)
             ],
             keywords=[]
@@ -17,7 +16,7 @@ def getBehaviorLogStmt(uid, behaviorName):
     )
 
 
-def getParticipantLogStmt(uid, behaviorName, participantName, participantValue):
+def getParticipantLogStmt(behaviorName, participantName, participantValue):
     return ast.Call(
         func=ast.Attribute(
             value=ast.Name(id="adli", ctx=ast.Load()),
@@ -25,10 +24,9 @@ def getParticipantLogStmt(uid, behaviorName, participantName, participantValue):
             ctx=ast.Load()
         ),
         args=[
-            ast.Constant(value=uid),
             ast.Constant(value=behaviorName),
             ast.Constant(value=participantName),
-            ast.Name(id="participantValue", ctx=ast.Load())
+            ast.Name(id=participantValue, ctx=ast.Load())
         ],
         keywords=[]
     )
