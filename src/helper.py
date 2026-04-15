@@ -16,17 +16,19 @@ def getBehaviorLogStmt(behaviorName):
     )
 
 
-def getParticipantLogStmt(behaviorName, participantName, participantValue):
-    return ast.Call(
-        func=ast.Attribute(
-            value=ast.Name(id="adli", ctx=ast.Load()),
-            attr="logVariable",
-            ctx=ast.Load()
-        ),
-        args=[
-            ast.Constant(value=behaviorName),
-            ast.Constant(value=participantName),
-            ast.Name(id=participantValue, ctx=ast.Load())
-        ],
-        keywords=[]
+def getParticipantLogStmt(behaviorName, participantName):
+    return ast.Expr(
+        value = ast.Call(
+            func=ast.Attribute(
+                value=ast.Name(id="adli", ctx=ast.Load()),
+                attr="logParticipant",
+                ctx=ast.Load()
+            ),
+            args=[
+                ast.Constant(value=behaviorName),
+                ast.Constant(value=participantName),
+                ast.Name(id=participantName, ctx=ast.Load())
+            ],
+            keywords=[]
+        )
     )

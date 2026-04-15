@@ -1,5 +1,5 @@
 import ast
-from src.helper import getBehaviorLogStmt
+from src.helper import getBehaviorLogStmt, getParticipantLogStmt
 
 class LogInjector(ast.NodeTransformer):
 
@@ -10,12 +10,16 @@ class LogInjector(ast.NodeTransformer):
         # Behavior name convention is b_<behavior_name>
         if not func_name.startswith("b_"):
             return self.generic_visit(node)
+        else:            
+            behaviorName = func_name[2:] 
 
-        behavior_name = func_name[2:] 
-        node.body.insert(0, getBehaviorLogStmt(behavior_name))
+        for participantName in args:
+            if participantName == "self":
+                continue
+            node.body.insert(0,getParticipantLogStmt(behaviorName, participantName))
+            
+        node.body.insert(0,getBehaviorLogStmt(behaviorName))
 
-        print("\nName:", behavior_name)
-        print("args:", args)
         return self.generic_visit(node)
 
 def instrument_semantic_information(source, stream = False):
@@ -25,6 +29,8 @@ def instrument_semantic_information(source, stream = False):
 
     injector = LogInjector()
     instrumentedCode = injector.visit(ast.parse(source_code))
+
+    # ast.fix_missing_locations(instrumentedCode)
 
     with open("output/instrumented_output.py", "w") as f:
         f.write(ast.unparse(instrumentedCode))
