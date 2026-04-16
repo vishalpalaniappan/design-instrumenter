@@ -8,11 +8,11 @@ import { spawn } from "node:child_process";
  */
 function instrumentingRunner(source, args = []) {
     return new Promise((resolve, reject) => {
-        const process = spawn("python3", ["instrumenter.py", "instrumenter_stream", ...args]);
+        const process = spawn("python3", ["design_instrumenter.py", "instrumenter_stream", ...args]);
                 let settled = false;
 
         const stdoutChunks = [];
-        const stderr = "";
+        let stderr = "";
 
 
         process.stdout.on("data", (data) => {

@@ -2,6 +2,7 @@ import io
 import os
 import ast
 import sys
+import json
 import shutil
 import zipfile
 from pathlib import Path
@@ -57,16 +58,26 @@ def instrument_semantic_information(source, stream = False):
         with open(source, "r") as source_file:
             source_code = source_file.read()
 
+    package = json.loads(source_code)
             
     script_dir = Path(__file__).resolve().parent
     output_folder = Path(os.path.join(script_dir.parent, "output"))
     shutil.rmtree(output_folder, ignore_errors=True)
+    os.makedirs(output_folder, exist_ok=True)
 
-    injector = LogInjector()
-    instrumentedCode = injector.visit(ast.parse(source_code))
+    for file in package:
+        if not package[file]["name"].endswith(".py"):
+            continue
+        source = package[file]["content"]
+        injector = LogInjector()
+        instrumentedCode = injector.visit(ast.parse(source))
 
-    importNode = ast.parse("from LoggingHelper import adli").body[0]
-    instrumentedCode.body.insert(0, importNode)
+        importNode = ast.parse("from LoggingHelper import adli").body[0]
+        instrumentedCode.body.insert(0, importNode)
+
+        instrumented_file_path = os.path.join(output_folder, os.path.basename(package[file]["name"]))
+        with open(instrumented_file_path, "w") as instrumented_file:
+            instrumented_file.write(ast.unparse(instrumentedCode))
 
     copyFile(script_dir, output_folder, "LoggingHelper.py")
 
