@@ -6,7 +6,6 @@ import json
 import shutil
 import zipfile
 from pathlib import Path
-from src.helper import copyFile
 from src.helper import injectTryExcept
 from src.helper import getBehaviorLogStmt
 from src.helper import getParticipantLogStmt
@@ -61,7 +60,7 @@ def instrument_semantic_information(source, stream = False):
     package = json.loads(source_code)
             
     script_dir = Path(__file__).resolve().parent
-    output_folder = Path(os.path.join(script_dir.parent, "output"))
+    output_folder = Path(os.path.join(script_dir, "output"))
     shutil.rmtree(output_folder, ignore_errors=True)
     os.makedirs(output_folder, exist_ok=True)
 
@@ -79,7 +78,9 @@ def instrument_semantic_information(source, stream = False):
         with open(instrumented_file_path, "w") as instrumented_file:
             instrumented_file.write(ast.unparse(instrumentedCode))
 
-    copyFile(script_dir, output_folder, "LoggingHelper.py")
+    src = script_dir / "LoggingHelper.py"
+    dst = output_folder / "LoggingHelper.py"
+    shutil.copy2(src, dst)
 
     if (stream):
         buffer = zip_folder_in_memory(output_folder)
@@ -89,6 +90,5 @@ def instrument_semantic_information(source, stream = False):
                 break
             sys.stdout.buffer.write(chunk)
             sys.stdout.buffer.flush()
-    else:
-        with open(output_folder / "instrumented_output.py", "w") as f:
-            f.write(ast.unparse(instrumentedCode))
+
+    
