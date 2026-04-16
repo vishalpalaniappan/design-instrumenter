@@ -26,9 +26,13 @@ def main(argv):
         help="Path to instrumentation package for instrumenter mode."
     )
 
+    subparsers.add_parser("instrumenter_stream")    
+
     args = args_parser.parse_args(argv[1:])
     if (args.mode == "instrument"):
         instrument_semantic_information(args.source, stream=False)
+    elif (args.mode == "instrumenter_stream"):
+        instrument_semantic_information(None, stream=True)
     else:
         print(f"Unknown or missing mode: {args.mode}. Supported modes: instrument", file=sys.stderr)
         return 1

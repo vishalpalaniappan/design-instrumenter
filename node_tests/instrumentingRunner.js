@@ -6,16 +6,17 @@ import { spawn } from "node:child_process";
  * @param {Array} args The arguments to pass to the instrumenter.
  * @returns {Promise<String>} A promise that resolves with the output of the instrumenter.
  */
-function getMapping(source, args = []) {
+function instrumentingRunner(source, args = []) {
     return new Promise((resolve, reject) => {
-        const process = spawn("python3", ["instrumenter.py", "parser_stream", ...args]);
-        let settled = false;
+        const process = spawn("python3", ["instrumenter.py", "instrumenter_stream", ...args]);
+                let settled = false;
 
-        let stdout = "";
-        let stderr = "";
+        const stdoutChunks = [];
+        const stderr = "";
+
 
         process.stdout.on("data", (data) => {
-            stdout += data.toString();
+            stdoutChunks.push(data);
         });
 
         process.stderr.on("data", (data) => {
@@ -34,14 +35,18 @@ function getMapping(source, args = []) {
             if (code !== 0) {
                 reject(new Error(stderr || `Process exited with code ${code}`));
             } else {
-                const outputData = stdout.trim();
-                resolve(outputData);
+                resolve(Buffer.concat(stdoutChunks));
             }
         });
+
+        if (typeof source !== "string") {
+            reject(new Error("source must be a string"));
+            return;
+        }
 
         process.stdin.write(source);
         process.stdin.end();
     });
 }
 
-export default getMapping;
+export default instrumentingRunner;

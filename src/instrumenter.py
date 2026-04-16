@@ -1,8 +1,32 @@
+import io
 import os
 import ast
+import sys
 import shutil
+import zipfile
 from pathlib import Path
-from src.helper import getBehaviorLogStmt, getParticipantLogStmt, injectTryExcept
+from src.helper import copyFile
+from src.helper import injectTryExcept
+from src.helper import getBehaviorLogStmt
+from src.helper import getParticipantLogStmt
+
+def zip_folder_in_memory(folder_path: str):
+    '''
+        Zips the contents of a folder in memory so that
+        it can be streamed to the client without having to
+        write the zip file to disk.
+    '''
+    buffer = io.BytesIO()
+
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zf:
+        for root, _, files in os.walk(folder_path):
+            for file_name in files:
+                full_path = os.path.join(root, file_name)
+                rel_path = os.path.relpath(full_path, folder_path)
+                zf.write(full_path, rel_path)
+
+    buffer.seek(0)
+    return buffer
 
 class LogInjector(ast.NodeTransformer):
 
@@ -27,9 +51,16 @@ class LogInjector(ast.NodeTransformer):
         return self.generic_visit(node)
 
 def instrument_semantic_information(source, stream = False):
+    if stream:
+        source_code = sys.stdin.read()
+    else:
+        with open(source, "r") as source_file:
+            source_code = source_file.read()
 
-    with open(source, "r") as source_file:
-        source_code = source_file.read()
+            
+    script_dir = Path(__file__).resolve().parent
+    output_folder = Path(os.path.join(script_dir.parent, "output"))
+    shutil.rmtree(output_folder, ignore_errors=True)
 
     injector = LogInjector()
     instrumentedCode = injector.visit(ast.parse(source_code))
@@ -37,13 +68,16 @@ def instrument_semantic_information(source, stream = False):
     importNode = ast.parse("from LoggingHelper import adli").body[0]
     instrumentedCode.body.insert(0, importNode)
 
-    script_dir = Path(__file__).resolve().parent
-    output_folder = Path(os.path.join(script_dir.parent, "output"))
-    src = script_dir / "LoggingHelper.py"
-    dst = output_folder / "LoggingHelper.py"
+    copyFile(script_dir, output_folder, "LoggingHelper.py")
 
-    os.makedirs(os.path.dirname(dst), exist_ok=True)
-    shutil.copy2(src, dst)
-
-    with open(output_folder / "instrumented_output.py", "w") as f:
-        f.write(ast.unparse(instrumentedCode))
+    if (stream):
+        buffer = zip_folder_in_memory(output_folder)
+        while True:
+            chunk = buffer.read(4096)
+            if not chunk:
+                break
+            sys.stdout.buffer.write(chunk)
+            sys.stdout.buffer.flush()
+    else:
+        with open(output_folder / "instrumented_output.py", "w") as f:
+            f.write(ast.unparse(instrumentedCode))

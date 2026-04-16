@@ -1,4 +1,12 @@
 import ast
+import os
+import shutil
+
+def copyFile(srcDir, dstDir, fileName):
+    src = srcDir / "LoggingHelper.py"
+    dst = dstDir / "LoggingHelper.py"
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    shutil.copy2(src, dst)
 
 def getBehaviorLogStmt(behaviorName):
     return ast.Expr(
