@@ -41,8 +41,10 @@ class LogInjector(ast.NodeTransformer):
             behaviorName = func_name[2:] 
 
         # TODO: Shift particiant from args to variable begining with prefix p_pre_<participant_name>
-        # Here pre is the precondition and in then there will be a post condition with prefix p_post_<participant_name>
-        # Given pre state, the semantic model will identify the post state an compare it with the logged post state.
+        # Here pre is the precondition and then there will be a post condition with prefix p_post_<participant_name>
+        # Given pre state, the semantic model applies the transformation and produces the post state used to determine
+        # the correctness of the behavior. This means that the invariants can also be built into the behaviors semantic
+        # definition and the engine can evaluate these as part of the transformation process.
         for participantName in args:
             if participantName == "self":
                 continue
