@@ -40,6 +40,9 @@ class LogInjector(ast.NodeTransformer):
         else:            
             behaviorName = func_name[2:] 
 
+        # TODO: Shift particiant from args to variable begining with prefix p_pre_<participant_name>
+        # Here pre is the precondition and in then there will be a post condition with prefix p_post_<participant_name>
+        # Given pre state, the semantic model will identify the post state an compare it with the logged post state.
         for participantName in args:
             if participantName == "self":
                 continue
