@@ -29,7 +29,7 @@ def getParticipantLogStmt(behaviorName, participantName, participantType, partic
                 ast.Constant(value=behaviorName),
                 ast.Constant(value=participantName),
                 ast.Constant(value=participantType),
-                ast.parse(participantValue, mode="eval").body
+                participantValue
             ],
             keywords=[]
         )
