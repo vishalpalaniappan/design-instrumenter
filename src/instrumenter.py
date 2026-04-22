@@ -50,13 +50,13 @@ class LogInjector(ast.NodeTransformer):
             if node.targets[0].id.startswith("p_pre"):
                 name = node.targets[0].id.split('_')[-1]
                 return [
-                    getParticipantLogStmt(self.behaviorName, name, "pre"),
+                    getParticipantLogStmt(self.behaviorName, ast.unparse(node.value), "pre"),
                     self.generic_visit(node)
                 ]
             elif node.targets[0].id.startswith("p_post"):
                 name = node.targets[0].id.split('_')[-1]
                 return [
-                    getParticipantLogStmt(self.behaviorName, name, "post"),
+                    getParticipantLogStmt(self.behaviorName, ast.unparse(node.value), "post"),
                     self.generic_visit(node)
                 ]
         return self.generic_visit(node)
