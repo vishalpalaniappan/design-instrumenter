@@ -22,11 +22,12 @@ class LoggingHelper:
     def __init__(self):
         self.count = 0
 
-    def logParticipant(self, behaviorId, participantName, participantValue):
+    def logParticipant(self, behaviorId, participantName, participantType, participantValue):
         entry = {}
         entry["type"] = "participant"
         entry["behaviorName"] = behaviorId
         entry["participantName"] = participantName
+        entry["participantType"] = participantType
         entry["participantValue"] = participantValue
         logger.info(entry)
 
