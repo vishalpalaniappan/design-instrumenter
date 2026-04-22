@@ -17,7 +17,7 @@ def getBehaviorLogStmt(behaviorName):
     )
 
 
-def getParticipantLogStmt(behaviorName, participantName):
+def getParticipantLogStmt(behaviorName, participantName, participantType):
     return ast.Expr(
         value = ast.Call(
             func=ast.Attribute(
@@ -28,6 +28,7 @@ def getParticipantLogStmt(behaviorName, participantName):
             args=[
                 ast.Constant(value=behaviorName),
                 ast.Constant(value=participantName),
+                ast.Constant(value=participantType),
                 ast.Name(id=participantName, ctx=ast.Load())
             ],
             keywords=[]

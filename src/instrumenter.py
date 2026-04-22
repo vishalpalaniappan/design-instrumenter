@@ -38,22 +38,29 @@ class LogInjector(ast.NodeTransformer):
         if not func_name.startswith("b_"):
             return self.generic_visit(node)
         else:            
-            behaviorName = func_name[2:] 
-
-        # TODO: Shift particiant from args to variable begining with prefix p_pre_<participant_name>
-        # Here pre is the precondition and then there will be a post condition with prefix p_post_<participant_name>
-        # Given pre state, the semantic model applies the transformation and produces the post state used to determine
-        # the correctness of the behavior. This means that the invariants can also be built into the behaviors semantic
-        # definition and the engine can evaluate these as part of the transformation process.
-        for participantName in args:
-            if participantName == "self":
-                continue
-            node.body.insert(0,getParticipantLogStmt(behaviorName, participantName))
+            self.behaviorName = func_name[2:] 
             
-        node.body.insert(0,getBehaviorLogStmt(behaviorName))        
-        node.body = [injectTryExcept(node.body, behaviorName)]
+        node.body.insert(0,getBehaviorLogStmt(self.behaviorName))        
+        node.body = [injectTryExcept(node.body, self.behaviorName)]
 
         return self.generic_visit(node)
+
+    def visit_Assign(self, node):
+        if (isinstance(node.targets[0], ast.Name)):
+            if node.targets[0].id.startswith("p_pre"):
+                name = node.targets[0].id.split('_')[-1]
+                return [
+                    getParticipantLogStmt(self.behaviorName, name, "pre"),
+                    self.generic_visit(node)
+                ]
+            elif node.targets[0].id.startswith("p_post"):
+                name = node.targets[0].id.split('_')[-1]
+                return [
+                    getParticipantLogStmt(self.behaviorName, name, "post"),
+                    self.generic_visit(node)
+                ]
+        return self.generic_visit(node)
+    
 
 def instrument_semantic_information(source, stream = False):
     if stream:
