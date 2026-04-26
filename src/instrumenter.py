@@ -9,6 +9,7 @@ from pathlib import Path
 from src.helper import injectTryExcept
 from src.helper import getBehaviorLogStmt
 from src.helper import getParticipantLogStmt
+from src.helper import getArgumentLogStmt
 
 def zip_folder_in_memory(folder_path: str):
     '''
@@ -53,6 +54,9 @@ class LogInjector(ast.NodeTransformer):
             elif node.targets[0].id.startswith("p_post"):
                 name = node.targets[0].id.split('_')[-1]
                 return getParticipantLogStmt(self.behaviorName, name, "post", node.value)
+            elif node.targets[0].id.startswith("p_arg"):
+                name = node.targets[0].id.split('_')[-1]
+                return getArgumentLogStmt(self.behaviorName, name, node.value)
         return self.generic_visit(node)
     
 
