@@ -53,10 +53,6 @@ def getParticipantLogStmt(behaviorName, participantName, participantType, partic
 
 
 def injectTryExcept(nodeBody, behaviorName):
-    '''
-        Injects try except structure around the given tree.
-        Injects header into file and imports adli logger instance.
-    '''
     logExceptionCall=ast.Call(
         func=ast.Attribute(
             value=ast.Name(id="adli", ctx=ast.Load()),
