@@ -11,6 +11,11 @@ from src.helper import getBehaviorLogStmt
 from src.helper import getParticipantLogStmt
 from src.helper import getArgumentLogStmt
 
+BEHAVIOR_PREFIX = "b_"
+PARTICIPANT_PRE_PREFIX = "p_pre_"
+PARTICIPANT_POST_PREFIX = "p_post_"
+ARGUMENT_PREFIX = "p_arg_"
+
 def zip_folder_in_memory(folder_path: str):
     '''
         Zips the contents of a folder in memory so that
@@ -36,10 +41,10 @@ class LogInjector(ast.NodeTransformer):
         args = [arg.arg for arg in node.args.args]
 
         # Behavior name convention is b_<behavior_name>
-        if not func_name.startswith("b_"):
+        if not func_name.startswith(BEHAVIOR_PREFIX):
             return self.generic_visit(node)
         else:            
-            self.behaviorName = func_name[2:] 
+            self.behaviorName = func_name[len(BEHAVIOR_PREFIX):]
             
         node.body.insert(0,getBehaviorLogStmt(self.behaviorName))        
         node.body = [injectTryExcept(node.body, self.behaviorName)]
@@ -47,16 +52,27 @@ class LogInjector(ast.NodeTransformer):
         return self.generic_visit(node)
 
     def visit_Assign(self, node):
+        
         if (isinstance(node.targets[0], ast.Name)):
-            if node.targets[0].id.startswith("p_pre"):
-                name = node.targets[0].id.split('_')[-1]
+
+            if node.targets[0].id.startswith(PARTICIPANT_PRE_PREFIX):
+                # Pre-behavior participant
+                # Convention: p_pre_<participant_name>
+                name = node.targets[0].id[len(PARTICIPANT_PRE_PREFIX):]
                 return getParticipantLogStmt(self.behaviorName, name, "pre", node.value)
-            elif node.targets[0].id.startswith("p_post"):
-                name = node.targets[0].id.split('_')[-1]
+            
+            elif node.targets[0].id.startswith(PARTICIPANT_POST_PREFIX):
+                # Post-behavior participant
+                # Convention: p_post_<participant_name>
+                name = node.targets[0].id[len(PARTICIPANT_POST_PREFIX):]
                 return getParticipantLogStmt(self.behaviorName, name, "post", node.value)
-            elif node.targets[0].id.startswith("p_arg"):
-                name = node.targets[0].id.split('_')[-1]
+            
+            elif node.targets[0].id.startswith(ARGUMENT_PREFIX):
+                # Argument value (is input into behavior, becomes a participant post-behavior)
+                # Convention: p_arg_<argument_name>
+                name = node.targets[0].id[len(ARGUMENT_PREFIX):]
                 return getArgumentLogStmt(self.behaviorName, name, node.value)
+            
         return self.generic_visit(node)
     
 
