@@ -1,5 +1,4 @@
 import logging
-import traceback
 from pathlib import Path
 from clp_logging.handlers import ClpKeyValuePairStreamHandler
 
