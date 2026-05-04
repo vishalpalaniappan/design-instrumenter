@@ -37,10 +37,15 @@ def zip_folder_in_memory(folder_path: str):
 class LogInjector(ast.NodeTransformer):
 
     def visit_FunctionDef(self, node):
-        func_name = node.name
-        args = [arg.arg for arg in node.args.args]
+        '''
+            If the function name is prefixed with "b_" then it is considered
+            a behavior and the relevant log statements are injected.
 
-        # Behavior name convention is b_<behavior_name>
+            The convention for behavior names is:
+            - Behavior: b_<behavior_name>        
+        '''
+        func_name = node.name
+
         if not func_name.startswith(BEHAVIOR_PREFIX):
             return self.generic_visit(node)
         else:            
@@ -52,24 +57,30 @@ class LogInjector(ast.NodeTransformer):
         return self.generic_visit(node)
 
     def visit_Assign(self, node):
+        '''
+            If the assign statement is prefixed with a keyword then it is replaced
+            with the relevant log statement. 
+
+            The convention is as follows:
+            - Pre-behavior participant: p_pre_<participant_name>
+            - Post-behavior participant: p_post_<participant_name>
+            - Argument value: p_arg_<argument_name>
+
+            These conventions are used when implementing the design and allow the
+            user to specify which information the instrumenter should log.        
+        '''
         
         if (isinstance(node.targets[0], ast.Name)):
 
             if node.targets[0].id.startswith(PARTICIPANT_PRE_PREFIX):
-                # Pre-behavior participant
-                # Convention: p_pre_<participant_name>
                 name = node.targets[0].id[len(PARTICIPANT_PRE_PREFIX):]
                 return getParticipantLogStmt(self.behaviorName, name, "pre", node.value)
             
             elif node.targets[0].id.startswith(PARTICIPANT_POST_PREFIX):
-                # Post-behavior participant
-                # Convention: p_post_<participant_name>
                 name = node.targets[0].id[len(PARTICIPANT_POST_PREFIX):]
                 return getParticipantLogStmt(self.behaviorName, name, "post", node.value)
             
             elif node.targets[0].id.startswith(ARGUMENT_PREFIX):
-                # Argument value (is input into behavior, becomes a participant post-behavior)
-                # Convention: p_arg_<argument_name>
                 name = node.targets[0].id[len(ARGUMENT_PREFIX):]
                 return getArgumentLogStmt(self.behaviorName, name, node.value)
             
