@@ -1,5 +1,4 @@
 import ast
-import shutil
 
 def getBehaviorLogStmt(behaviorName):
     return ast.Expr(
