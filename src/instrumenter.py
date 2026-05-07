@@ -48,13 +48,22 @@ class LogInjector(ast.NodeTransformer):
 
         if not func_name.startswith(BEHAVIOR_PREFIX):
             return self.generic_visit(node)
-        else:            
-            self.behaviorName = func_name[len(BEHAVIOR_PREFIX):]
+        
+        # Set behavior name before visiting body of function
+        self.behaviorName = func_name[len(BEHAVIOR_PREFIX):]
+
+        # Visit body of function to inject logs for participants and arguments
+        node = self.generic_visit(node)
             
+        # Inject behavior log statement and try except block to log failures
         node.body.insert(0,getBehaviorLogStmt(self.behaviorName))        
         node.body = [injectTryExcept(node.body, self.behaviorName)]
 
-        return self.generic_visit(node)
+        # Reset behavior name after visiting body of function to avoid logging
+        # participants and arguments for non-behavior assign statements
+        self.behaviorName = None
+
+        return node
 
     def visit_Assign(self, node):
         '''
@@ -70,7 +79,7 @@ class LogInjector(ast.NodeTransformer):
             user to specify which information the instrumenter should log.        
         '''
         
-        if (isinstance(node.targets[0], ast.Name)):
+        if (isinstance(node.targets[0], ast.Name) and self.behaviorName is not None):
 
             if node.targets[0].id.startswith(PARTICIPANT_PRE_PREFIX):
                 name = node.targets[0].id[len(PARTICIPANT_PRE_PREFIX):]
