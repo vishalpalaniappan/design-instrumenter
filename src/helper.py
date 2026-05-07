@@ -1,6 +1,11 @@
 import ast
 
 def getBehaviorLogStmt(behaviorName):
+    '''
+        Logs the execution of a behavior with the given name.
+         - behaviorName: The name of the behavior to log.
+         - Returns: An AST node representing the logging statement.
+    '''
     return ast.Expr(
         value=ast.Call(
             func=ast.Attribute(
@@ -16,6 +21,13 @@ def getBehaviorLogStmt(behaviorName):
     )
 
 def getArgumentLogStmt(behaviorName, argumentName, argumentValue):
+    '''
+        Logs the value of an argument for a behavior with the given name.
+         - behaviorName: The name of the behavior to log.
+         - argumentName: The name of the argument to log.
+         - argumentValue: The value of the argument to log.
+         - Returns: An AST node representing the logging statement.
+    '''
     return ast.Expr(
         value=ast.Call(
             func=ast.Attribute(
@@ -33,6 +45,14 @@ def getArgumentLogStmt(behaviorName, argumentName, argumentValue):
     )
 
 def getParticipantLogStmt(behaviorName, participantName, participantType, participantValue):
+    '''
+        Logs the value of a participant for a behavior with the given name.
+         - behaviorName: The name of the behavior to log.
+         - participantName: The name of the participant to log.
+         - participantType: The type of the participant to log.
+         - participantValue: The value of the participant to log.
+         - Returns: An AST node representing the logging statement.
+    '''
     return ast.Expr(
         value = ast.Call(
             func=ast.Attribute(
@@ -52,6 +72,13 @@ def getParticipantLogStmt(behaviorName, participantName, participantType, partic
 
 
 def injectTryExcept(nodeBody, behaviorName):
+    '''
+        Wraps the provided node body in a try-except block to log failures.
+        In this tool, this is used to inject try-except around function body.
+         - nodeBody: The body of the program to wrap.
+         - behaviorName: The name of the behavior to log in case of failure.
+         - Returns: An AST node representing the try-except block.
+    '''
     logExceptionCall=ast.Call(
         func=ast.Attribute(
             value=ast.Name(id="semanticLogger", ctx=ast.Load()),
