@@ -88,12 +88,31 @@ class LogInjector(ast.NodeTransformer):
     
 
 def instrument_semantic_information(source, stream = False):
+    '''
+        Instruments the source code with logging statements to log semantic information during runtime. 
+
+        TODO: Extend this to support folders. Currently, all the programs have to be in the same folder.
+    '''
     if stream:
         source_code = sys.stdin.read()
     else:
         with open(source, "r") as source_file:
             source_code = source_file.read()
 
+    '''
+        The package is a dictionary which holdes the files and
+        their content. The workbench streams this automatically in
+        the server.
+
+        If you want to test this locally, you
+        need to export the file tree from the engine in JSON
+        format. Example is in sample foler with the name 
+        execution_trace_walker.json.
+
+        python3 design_instrumenter.py instrument --source sample/execution_trace_walker.dal.json
+
+        Output will be in the output folder of this folder.
+    '''
     package = json.loads(source_code)
             
     script_dir = Path(__file__).resolve().parent
@@ -105,13 +124,16 @@ def instrument_semantic_information(source, stream = False):
         if not package[file]["name"].endswith(".py"):
             continue
         source = package[file]["content"]
+
+        # Create injector and inject logs in the source code
         injector = LogInjector()
         instrumentedCode = injector.visit(ast.parse(source))
 
-        # Import semanticLogger to log the semantic information during runtime
+        # Inject statement to import semanticLogger for use during runtime
         importNode = ast.parse("from LoggingHelper import semanticLogger").body[0]
         instrumentedCode.body.insert(0, importNode)
 
+        # Write the instrumented code to the output folder
         instrumented_file_path = os.path.join(output_folder, os.path.basename(package[file]["name"]))
         with open(instrumented_file_path, "w") as instrumented_file:
             instrumented_file.write(ast.unparse(instrumentedCode))
@@ -120,6 +142,7 @@ def instrument_semantic_information(source, stream = False):
     dst = output_folder / "LoggingHelper.py"
     shutil.copy2(src, dst)
 
+    # Stream output
     if (stream):
         buffer = zip_folder_in_memory(output_folder)
         while True:
