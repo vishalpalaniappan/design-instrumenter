@@ -4,7 +4,7 @@ def getBehaviorLogStmt(behaviorName):
     return ast.Expr(
         value=ast.Call(
             func=ast.Attribute(
-                value=ast.Name(id="adli", ctx=ast.Load()),
+                value=ast.Name(id="semanticLogger", ctx=ast.Load()),
                 attr="logBehavior",
                 ctx=ast.Load()
             ),
@@ -19,7 +19,7 @@ def getArgumentLogStmt(behaviorName, argumentName, argumentValue):
     return ast.Expr(
         value=ast.Call(
             func=ast.Attribute(
-                value=ast.Name(id="adli", ctx=ast.Load()),
+                value=ast.Name(id="semanticLogger", ctx=ast.Load()),
                 attr="logArgument",
                 ctx=ast.Load()
             ),
@@ -36,7 +36,7 @@ def getParticipantLogStmt(behaviorName, participantName, participantType, partic
     return ast.Expr(
         value = ast.Call(
             func=ast.Attribute(
-                value=ast.Name(id="adli", ctx=ast.Load()),
+                value=ast.Name(id="semanticLogger", ctx=ast.Load()),
                 attr="logParticipant",
                 ctx=ast.Load()
             ),
@@ -54,7 +54,7 @@ def getParticipantLogStmt(behaviorName, participantName, participantType, partic
 def injectTryExcept(nodeBody, behaviorName):
     logExceptionCall=ast.Call(
         func=ast.Attribute(
-            value=ast.Name(id="adli", ctx=ast.Load()),
+            value=ast.Name(id="semanticLogger", ctx=ast.Load()),
             attr="logFailure",
             ctx=ast.Load()
         ),

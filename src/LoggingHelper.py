@@ -50,5 +50,5 @@ class LoggingHelper:
         entry["behaviorName"] = behaviorId
         logger.info(entry)
 
-
-adli = LoggingHelper()
+# Semantic logger
+semanticLogger = LoggingHelper()

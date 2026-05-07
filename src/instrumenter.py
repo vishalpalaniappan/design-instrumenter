@@ -108,7 +108,8 @@ def instrument_semantic_information(source, stream = False):
         injector = LogInjector()
         instrumentedCode = injector.visit(ast.parse(source))
 
-        importNode = ast.parse("from LoggingHelper import adli").body[0]
+        # Import semanticLogger to log the semantic information during runtime
+        importNode = ast.parse("from LoggingHelper import semanticLogger").body[0]
         instrumentedCode.body.insert(0, importNode)
 
         instrumented_file_path = os.path.join(output_folder, os.path.basename(package[file]["name"]))
