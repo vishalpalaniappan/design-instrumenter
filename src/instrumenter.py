@@ -35,6 +35,10 @@ def zip_folder_in_memory(folder_path: str):
     return buffer
 
 class LogInjector(ast.NodeTransformer):
+    
+    def __init__(self):
+        super().__init__()
+        self.behaviorName = None
 
     def visit_FunctionDef(self, node):
         '''
