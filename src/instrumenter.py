@@ -116,15 +116,6 @@ def instrument_semantic_information(source, stream = False):
         The package is a dictionary which holdes the files and
         their content. The workbench streams this automatically in
         the server.
-
-        If you want to test this locally, you
-        need to export the file tree from the engine in JSON
-        format. Example is in sample foler with the name 
-        execution_trace_walker.json.
-
-        python3 design_instrumenter.py instrument --source sample/execution_trace_walker.dal.json
-
-        Output will be in the output folder of this folder.
     '''
     package = json.loads(source_code)
             
