@@ -20,7 +20,7 @@ const testStreamMode = async (designName) => {
         const zipBuffer = await instrumentingRunner(instrumentationPkg);
         console.log("Instrumenter output:", zipBuffer);
         const directory = await unzipper.Open.buffer(zipBuffer);
-        await directory.extract({ path: "./" });
+        await directory.extract({ path: "./output" });
     } catch (err) {
         console.error("Error during instrumenter execution:");
         console.error(err);
