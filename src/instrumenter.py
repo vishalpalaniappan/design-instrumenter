@@ -100,17 +100,13 @@ class LogInjector(ast.NodeTransformer):
         return self.generic_visit(node)
     
 
-def instrument_semantic_information(source, stream = False):
+def instrument_semantic_information():
     '''
         Instruments the source code with logging statements to log semantic information during runtime. 
 
         TODO: Extend this to support folders. Currently, all the programs have to be in the same folder.
     '''
-    if stream:
-        source_code = sys.stdin.read()
-    else:
-        with open(source, "r") as source_file:
-            source_code = source_file.read()
+    source_code = sys.stdin.read()
 
     '''
         The package is a dictionary which holdes the files and
@@ -147,13 +143,12 @@ def instrument_semantic_information(source, stream = False):
     shutil.copy2(src, dst)
 
     # Stream output
-    if (stream):
-        buffer = zip_folder_in_memory(output_folder)
-        while True:
-            chunk = buffer.read(4096)
-            if not chunk:
-                break
-            sys.stdout.buffer.write(chunk)
-            sys.stdout.buffer.flush()
+    buffer = zip_folder_in_memory(output_folder)
+    while True:
+        chunk = buffer.read(4096)
+        if not chunk:
+            break
+        sys.stdout.buffer.write(chunk)
+        sys.stdout.buffer.flush()
 
     
