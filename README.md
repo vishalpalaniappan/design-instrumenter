@@ -1,26 +1,44 @@
 # Design Instrumentor
 
-> [!NOTE]  
-> This repo is in development and currently a simple parser is implemented to enable visual mapping of the design onto the implementation.
-
-This tool plays multiple roles in the design feedback loop. 
-- It parses the source code and generates a mapping file that can be used to visually map the design onto the implementation.
-- It accepts the mapping and instruments the source with the semantic information need to produce traces that can be semantically transformed. 
-
-This program will be called from the node server and it will provide the necessary metadata to the UI to enable the mapping. It will then be called by the server again when it instruments and executes the code. The resulting execution trace will be automatically debugged by the engine. 
-
-This process will be repeated for multiple languages and it will also be extended to instrument systems. The instrumenter will use CLP logging libraries and the mapping will be extended to include domain-specific knowledge about the data to apply domain-specific compression.
+This tool instruments a python program to log the semantic information needed for the computable semantic module to determine the semantic validity of the design. 
 
 ## Usage
 
-To produce mapping from a python program:
-```bash
-python3 instrumenter.py --mode parser <source_path>
+Updates coming soon.
+
+## Background
+
+The semantic information and the chosen convention is as follows:
+
+|   | Type        | Convention           | Description                      | Example                          |
+|---|-------------|----------------------|----------------------------------|----------------------------------|
+| A | Behavior    | b_`<behavior>`         | The behavior being exhibited.    | def b_acceptName():              |
+| B | Argument    | p_arg_`<argument>`     | The arguments into the behavior. | p_arg_name = name                |
+| C | Participant | p_pre_`<participant>`  | The pre behavior world state.    | p_pre_basket = basket            |
+| D | Participant | p_post_`<participant>` | The post behavior world state.   | p_post_firstLetter = firstLetter |
+
+Example using accept name behavior (argument as input from environment):
+```
+def b_acceptName():
+    name = input("Enter Book Name: ")
+    p_arg_name = name
+    p_post_name = name
+    return name
 ```
 
-An example for one of the sample files:
-```bash
-python3 instrumenter.py --mode parser sample/FrenchTranslator.py 
+Example using add book to basket behavior:
+```
+def b_addBookToBasket(book, basket):
+    p_pre_book = book
+    p_pre_basket = basket
+    basket.insert(0, book)
+    p_post_basket = basket
+    return basket
 ```
 
-Output will be saved in the output folder with the name <file_name>_mapping.json.
+When seen from the design playground in the workbench, this information populates the following fields (I'm using this commit https://github.com/vishalpalaniappan/design-workbench/pull/35/commits/71c82d03ce8e573c2a97ab9f7ccfaafd47b6d73e):
+
+<img width="1282" height="637" alt="image" src="https://github.com/user-attachments/assets/eb4bbe60-5251-4fbd-8ffa-a2e4e0556182" />
+
+
+Using this information, the engine can compute the post world state using the behavioral script in the semantic model. It then compares the output of the semantic model to the post behavior participant states and determines the semantic validity of the implementation. In addition, through invariants defined in the behavioral script for the participants, the engine is able to identify in what way the world is semantically invalid and use it to predict downstream failures.
