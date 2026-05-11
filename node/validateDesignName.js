@@ -1,6 +1,6 @@
 import path from "node:path";
 
-const WORKSPACE = path.resolve(process.cwd(), "sample");
+const WORKSPACE = path.resolve(process.cwd(), "designs");
 const VALID_NAME = /^[A-Za-z0-9_\-]+\.dal$/;
 
 /**

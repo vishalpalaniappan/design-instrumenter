@@ -8,6 +8,8 @@ In the current workflow, this tool is used by the workbench when the user execut
 
 Since this program is intended to be used by the workbench, I've added the workflow directly into this repo to use the program.
 
+The design files are placed in the `designs` folder and the node script will load them from there.
+
 To run the instrumenter using an engine file:
 ```shell
 node node/instrumentationTest.js lib_man_no_invariant.dal
