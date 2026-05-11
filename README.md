@@ -91,7 +91,8 @@ When seen from the design playground in the workbench, this information populate
 
 <img width="1282" height="637" alt="image" src="https://github.com/user-attachments/assets/eb4bbe60-5251-4fbd-8ffa-a2e4e0556182" />
 
-Note: The image above was gathered using this [commit][workbench-commit]. I will be making changes, so please apply the same logic to the latest version of the playground.
+> [!NOTE]  
+> The image above was obtained using this [commit][workbench-commit]. I will be making changes, so please apply the same logic to the latest version of the playground.
 
 Using this information, the engine can compute the post world state using the behavioral script in the semantic model. It then compares the output of the semantic model to the observed post behavior world state and determines the semantic validity of the implementation. In addition, through invariants defined in the behavioral script, the engine is able to identify in what way the world state is semantically invalid and use it to predict downstream failures.
 
