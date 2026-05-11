@@ -1,4 +1,4 @@
-# Design Instrumentor
+# Design Instrumenter
 
 This tool instruments a python program to log the semantic information needed for the computable semantic module to determine the semantic validity of the implementation. The implementation is structured such that the semantically relevant information is observable directly from its Abstract Syntax Tree (AST). The convention used in the implementation to mark the semantically relevant information and some examples are provided below.
 
