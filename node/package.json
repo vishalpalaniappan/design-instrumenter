@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "dependencies": {
+    "dal-engine-core-js-lib-dev": "0.0.57-dev-2",
+    "unzipper": "^0.12.3"
+  }
+}
