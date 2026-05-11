@@ -15,7 +15,8 @@ To run the instrumenter using an engine file:
 node node/instrumentationTest.js lib_man_no_invariant.dal
 ```
 
-Note: I have a `instrument` mode in the python program but only `instrumenter_stream` mode is currently supported. I left the instrument mode in to give myself flexibility in the future to expand.
+> [!NOTE]  
+> The structured needed for instrumenting a python file locally exists but only `instrumenter_stream` mode is currently supported. I left the instrument mode in to give myself flexibility in the future to expand.
 
 The node script itself invokes the `instrumenter_stream` mode using the following script:
 
