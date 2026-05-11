@@ -59,5 +59,4 @@ When seen from the design playground in the workbench, this information populate
 
 <img width="1282" height="637" alt="image" src="https://github.com/user-attachments/assets/eb4bbe60-5251-4fbd-8ffa-a2e4e0556182" />
 
-
 Using this information, the engine can compute the post world state using the behavioral script in the semantic model. It then compares the output of the semantic model to the post behavior participant states and determines the semantic validity of the implementation. In addition, through invariants defined in the behavioral script for the participants, the engine is able to identify in what way the world is semantically invalid and use it to predict downstream failures.
