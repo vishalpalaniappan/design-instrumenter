@@ -1,6 +1,8 @@
 # Design Instrumentor
 
-This tool instruments a python program to log the semantic information needed for the computable semantic module to determine the semantic validity of the design. 
+This tool instruments a python program to log the semantic information needed for the computable semantic module to determine the semantic validity of the implementation. 
+
+In the current workflow, this tool is used by the workbench when the user executes the program in the playground. The program is instrumented, executed and the resulting log file is ingested and automaticaly debugged in the engine.
 
 ## Usage
 
