@@ -6,7 +6,22 @@ In the current workflow, this tool is used by the workbench when the user execut
 
 ## Usage
 
-Updates coming soon.
+Since this program is intended to be used by the workbench, I've added the workflow directly into this repo to use the program.
+
+To run the instrumenter using an engine file:
+```shell
+node node/instrumentationTest.js lib_man_no_invariant.dal
+```
+
+Note: I have a `instrument` mode in the python program but only `instrumenter_stream` mode is currently supported. I left the instrument mode in to give myself flexibility in the future to expand.
+
+The node script itself invokes the `instrumenter_stream` mode using the following script:
+
+```shell
+python3 design_instrumenter.py instrumenter_stream
+```
+
+The source code is read from the design file and streamed to the instrumentation program using stdin and the output is read back through stdout.
 
 ## Background
 
