@@ -89,7 +89,7 @@ next:
 
 When seen from the design playground in the workbench, this information populates the following fields:
 
-<img width="1282" height="637" alt="image" src="https://github.com/user-attachments/assets/eb4bbe60-5251-4fbd-8ffa-a2e4e0556182" />
+![playground screenshot](/docs/scripting_playground.JPG)
 
 > [!NOTE]  
 > The image above was obtained using this [commit][workbench-commit]. I will be making changes, so please apply the same logic to the latest version of the playground.
