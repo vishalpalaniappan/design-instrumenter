@@ -28,7 +28,14 @@ const testStreamMode = async (designName) => {
     }
 }
 
-testStreamMode("lib_man_no_invariant.dal").catch((err) => {
+const args = process.argv;
+if (args.length < 3) {
+    console.error("Please provide the path to the design file as an argument.");
+    process.exit(1);
+}
+
+const designName = args[2];
+testStreamMode(designName).catch((err) => {
     console.error("Error during test execution:", err);
     process.exit(1);
 });
